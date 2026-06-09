@@ -1,0 +1,12 @@
+# Ignorar las librerías pesadas de Node (¡Esto es lo más importante!)
+**/node_modules/
+
+# Ignorar los archivos compilados de NestJS
+**/dist/
+
+# Ignorar archivos de configuración local o variables secretas
+**/.env
+
+# Archivos sueltos del sistema operativo
+.DS_Store
+Thumbs.db

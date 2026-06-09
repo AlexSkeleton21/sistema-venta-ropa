@@ -1,0 +1,16 @@
+.principal {
+  padding: 30px;
+  text-align: center;
+}
+
+.principal h1 {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.lista-productos {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}

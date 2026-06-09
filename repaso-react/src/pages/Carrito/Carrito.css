@@ -1,0 +1,65 @@
+.carrito {
+  padding: 30px;
+  text-align: center;
+}
+
+.lista-carrito {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.item-carrito {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 320px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+.item-carrito img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.btn-eliminar {
+  margin-left: auto;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-eliminar:hover {
+  background-color: darkred;
+}
+
+.total {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.btn-pagar {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.btn-pagar:hover {
+  background-color: darkgreen;
+}
