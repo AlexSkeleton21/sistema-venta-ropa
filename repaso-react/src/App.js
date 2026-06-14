@@ -2,15 +2,19 @@ import { useState, useEffect } from 'react';
 import Principal from './pages/Principal/Principal';
 import Carrito from './pages/Carrito/Carrito'; 
 import Admin from './pages/Admin/Admin'; 
+import Login from './pages/Login/Login'; 
+import UsuariosAdmin from './pages/Admin/UsuariosAdmin'; // 👈 Ya lo tenías importado perfectamente
+import axios from 'axios';
 import './App.css';
 
 function App() {
+  const [estaLogueado, guardarEstaLogueado] = useState(false);
+  const [rolUsuario, guardarRolUsuario] = useState('');
+  const [nombreUsuario, guardarNombreUsuario] = useState(''); 
+  
   const [seccion, cambiarSeccion] = useState('tienda'); 
   const [carrito, guardarCarrito] = useState([]);
   const [total, guardarTotal] = useState(0);
-  
-  // Este estado controlará si el botón del panel de administración es visible o no
-  const [mostrarBotonAdmin, guardarMostrarBotonAdmin] = useState(false);
 
   useEffect(() => {
     const nuevoTotal = carrito.reduce((ac, p) => ac + parseFloat(p.precio || 0), 0);
@@ -35,62 +39,91 @@ function App() {
     guardarCarrito([]);
   };
 
-  // 🔐 FUNCIÓN SECRETA (Huevo de Pascua + Contraseña)
-  const activarAccesoSecreto = () => {
-    const claveCorrecta = "hermana123"; // 👈 AQUÍ PUEDES CAMBIAR LA CONTRASEÑA
-    const intentoUsuario = prompt("🔒 Acceso Restringido. Ingrese la contraseña de administradora:");
-
-    if (intentoUsuario === claveCorrecta) {
-      alert("¡Acceso concedido! Se ha habilitado el Panel de Control.");
-      guardarMostrarBotonAdmin(true); // Hace aparecer el botón naranja en la barra
-      cambiarSeccion('admin');        // Te manda directo a la sección de administración
-    } else if (intentoUsuario !== null) {
-      alert("❌ Contraseña incorrecta. Acceso denegado.");
+  // 🚪 FUNCIÓN DE LOGOUT CON AUDITORÍA REAL
+  const ejecutarCierreSesion = async () => {
+    try {
+      await axios.post('http://localhost:3001/auth/logout', { username: nombreUsuario });
+    } catch (err) {
+      console.error("No se pudo registrar el log de salida.");
     }
+
+    guardarEstaLogueado(false);
+    guardarRolUsuario('');
+    guardarNombreUsuario('');
+    cambiarSeccion('tienda');
   };
+
+  // 🛑 GUARDIA DE SEGURIDAD GENERAL
+  if (!estaLogueado) {
+    return (
+      <div className="App">
+        <Login alLoguear={(rolAsignado, usuarioDigitado) => {
+          const rolLimpio = rolAsignado.toLowerCase(); 
+          guardarRolUsuario(rolLimpio);
+          guardarNombreUsuario(usuarioDigitado); 
+          guardarEstaLogueado(true);
+          
+          if (rolLimpio === 'admin') cambiarSeccion('admin');
+          else cambiarSeccion('tienda');
+        }} />
+      </div>
+    );
+  }
 
   return (
     <div className="App">
       {/* MENÚ DE NAVEGACIÓN */}
-      <nav className="barra-navegacion">
+      <nav className="barra-navegacion" style={{ display: 'flex', gap: '10px', padding: '10px', background: '#222' }}>
         <button onClick={() => cambiarSeccion('tienda')}>🛍️ Tienda</button>
         <button onClick={() => cambiarSeccion('carrito')}>
           🛒 Carrito ({carrito.length})
         </button>
         
-        {/* El botón de administración SOLO se renderiza si pasaste el truco secreto */}
-        {mostrarBotonAdmin && (
-          <button onClick={() => cambiarSeccion('admin')} className="btn-admin">
-            ⚙️ Panel de Control (Hermana)
-          </button>
+        {rolUsuario === 'admin' && (
+          <>
+            <button 
+              onClick={() => cambiarSeccion('admin')} 
+              style={{ backgroundColor: '#ff8c00', color: 'white', fontWeight: 'bold', border: 'none', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              ⚙️ Productos Admin
+            </button>
+            
+            {/* 🔑 NUEVO BOTÓN: Agregado directo en la barra de navegación para el Admin */}
+            <button 
+              onClick={() => cambiarSeccion('usuarios-admin')} 
+              style={{ backgroundColor: '#007bff', color: 'white', fontWeight: 'bold', border: 'none', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              👥 Usuarios Admin
+            </button>
+          </>
         )}
+
+        <button 
+          onClick={ejecutarCierreSesion} 
+          className="btn-salir" 
+          style={{ backgroundColor: '#ff453a', marginLeft: 'auto', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
+        >
+          ❌ Cerrar Sesión
+        </button>
       </nav>
 
-      {/* CONTENIDO DINÁMICO */}
-      <main className="contenido-principal">
-        {seccion === 'tienda' && (
-          <Principal agregarAlCarrito={agregarAlCarrito} />
-        )}
-        
-        {seccion === 'carrito' && (
-          <Carrito 
-            carrito={carrito} 
-            eliminarDelCarrito={eliminarDelCarrito} 
-            total={total} 
-            limpiarCarrito={limpiarCarrito} 
-          />
-        )}
+      <div style={{ background: '#333', color: '#fff', padding: '5px', fontSize: '12px', textAlign: 'left' }}>
+        <strong>🔍 Estado:</strong> Usuario: <span style={{color: '#32d74b'}}>{nombreUsuario}</span> | Rol: {rolUsuario} | Sección: {seccion}
+      </div>
 
-        {seccion === 'admin' && (
-          <Admin />
+      <main className="contenido-principal">
+        {seccion === 'tienda' && <Principal agregarAlCarrito={agregarAlCarrito} />}
+        {seccion === 'carrito' && (
+          <Carrito carrito={carrito} eliminarDelCarrito={eliminarDelCarrito} total={total} limpiarCarrito={limpiarCarrito} />
         )}
+        {seccion === 'admin' && <Admin />}
+        
+        {/* 🔑 NUEVA VISTA CONDICIONAL: Carga la página de usuarios cuando se activa la sección */}
+        {seccion === 'usuarios-admin' && <UsuariosAdmin />}
       </main>
 
-      {/* 🥚 FOOTER CON EL HUEVO DE PASCUA (DOBLE CLIC SECRETO) */}
       <footer className="pie-pagina">
-        <p onDoubleClick={activarAccesoSecreto} className="texto-secreto">
-          © 2026 Catálogo de Ropa. Todos los derechos reservados.
-        </p>
+        <p>© 2026 Sistema de Control de Inventario con Seguridad por Roles y Auditoría. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

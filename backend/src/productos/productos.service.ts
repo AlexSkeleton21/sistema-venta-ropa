@@ -41,10 +41,9 @@ export class ProductosService {
   }
 
   async elimina(id: number) {
-    const resultado = await this.repositorio.delete(id);
-    if (resultado.affected == 0) {
-      throw new NotFoundException('Producto no encontrado');
-    }
-    return { mensaje: 'Producto eliminado' };
+    const producto = await this.obtProducto(id);
+    producto.estado = 'Inactivo';
+    await this.repositorio.save(producto);
+    return { mensaje: 'Producto eliminado lógicamente (Estado: Inactivo)' };
   }
 }

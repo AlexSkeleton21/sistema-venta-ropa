@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # 💻 SERVICIO 1: EL FRONTEND (REACT)
+  frontend:
+    container_name: tienda-frontend
+    build:
+      context: ./frontend/repaso-react # 👈 Revisa que este sea el nombre exacto de tu carpeta de React
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Mapea tu puerto de siempre
+    restart: always
+    depends_on:
+      - backend
+
+  # ⚙️ SERVICIO 2: EL BACKEND (NESTJS)
+  backend:
+    container_name: tienda-backend
+    build:
+      context: ./backend # 👈 Revisa que este sea el nombre exacto de tu carpeta de NestJS
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001" # Mapea el puerto de tu API
+    environment:
+      - DB_HOST=host.docker.internal # 🔑 Truco maestro: Le permite al contenedor conectarse al MySQL de tu XAMPP local
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=tienda_ropa # Reemplaza por el nombre exacto de tu Base de Datos en phpMyAdmin
+    restart: always

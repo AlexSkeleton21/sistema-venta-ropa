@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductosModule } from './productos/productos.module';
+import { AuthModule } from './auth/auth.module'; // 👈 1. Importamos el nuevo módulo de seguridad
 
 @Module({
   imports: [
@@ -11,8 +12,10 @@ import { ProductosModule } from './productos/productos.module';
       username: 'root',
       password: '',
       entities: [__dirname + '/**/*.entity{.ts,.js}']
-    })
-  ,ProductosModule],
+    }),
+    ProductosModule,
+    AuthModule // 👈 2. Lo registramos aquí en el arreglo de imports
+  ],
   controllers: [],
   providers: [],
 })
