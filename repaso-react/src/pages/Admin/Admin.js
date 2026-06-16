@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'export-default-axios' // Nota: Si te da error de importación, déjalo como 'axios'
 import axios from 'axios';
 import { jsPDF } from 'jspdf'; // 🔑 Importación corregida con llaves
 import autoTable from 'jspdf-autotable'; // 🔑 Importación como función directa
@@ -17,7 +16,7 @@ const Admin = () => {
   // Traer ABSOLUTAMENTE TODOS los productos (Disponibles y Vendidos)
   const cargarInventario = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/productos/admin');
+      const res = await axios.get('https://sistema-venta-ropa-production.up.railway.app/productos/admin');
       guardarProductos(res.data);
     } catch (err) {
       console.error("Error al cargar inventario completo:", err);
@@ -43,7 +42,7 @@ const Admin = () => {
       return;
     }
     try {
-      await axios.post('http://localhost:3001/productos', {
+      await axios.post('https://sistema-venta-ropa-production.up.railway.app/productos', {
         nombre: nuevoProducto.nombre,
         precio: parseFloat(nuevoProducto.precio),
         imagen: nuevoProducto.imagen,
@@ -60,7 +59,7 @@ const Admin = () => {
   // 🔄 Cambiar estado (Vendido / Disponible)
   const cambiarEstadoPrenda = async (id, nuevoEstado) => {
     try {
-      await axios.patch(`http://localhost:3001/productos/${id}`, {
+      await axios.patch(`https://sistema-venta-ropa-production.up.railway.app/productos/${id}`, {
         estado: nuevoEstado
       });
       alert(`Estado actualizado a: ${nuevoEstado}`);
@@ -76,7 +75,7 @@ const Admin = () => {
     if (!confirmar) return;
 
     try {
-      await axios.delete(`http://localhost:3001/productos/${id}`);
+      await axios.delete(`https://sistema-venta-ropa-production.up.railway.app/productos/${id}`);
       alert("Prenda eliminada correctamente.");
       cargarInventario(); 
     } catch (err) {
@@ -202,7 +201,6 @@ const Admin = () => {
             value={nuevoProducto.precio} 
             onChange={manejarCambioInput}
           />
-          {/* 🌐 Cambiado el placeholder para dejar claro que acepta URLs de Internet */}
           <input 
             type="text" 
             name="imagen" 
