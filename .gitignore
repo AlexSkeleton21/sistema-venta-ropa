@@ -10,3 +10,7 @@
 # Archivos sueltos del sistema operativo
 .DS_Store
 Thumbs.db
+
+# 🚀 NUEVO: Ignorar los archivos pesados y bloqueantes de la base de datos de Docker
+**/mysql_data_limpia/
+**/mysql_data/

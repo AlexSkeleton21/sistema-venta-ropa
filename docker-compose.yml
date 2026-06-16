@@ -1,30 +1,43 @@
-version: '3.8'
-
 services:
-  # 💻 SERVICIO 1: EL FRONTEND (REACT)
+  # 💻 FRONTEND (REACT)
   frontend:
     container_name: tienda-frontend
     build:
-      context: ./frontend/repaso-react # 👈 Revisa que este sea el nombre exacto de tu carpeta de React
+      context: ./repaso-react
       dockerfile: Dockerfile
     ports:
-      - "3000:3000" # Mapea tu puerto de siempre
+      - "3000:3000"
     restart: always
     depends_on:
       - backend
 
-  # ⚙️ SERVICIO 2: EL BACKEND (NESTJS)
+  # ⚙️ BACKEND (NESTJS)
   backend:
     container_name: tienda-backend
     build:
-      context: ./backend # 👈 Revisa que este sea el nombre exacto de tu carpeta de NestJS
-      dockerfile: Dockerfile
+      context: ./backend
     ports:
-      - "3001:3001" # Mapea el puerto de tu API
+      - "3001:3001"
     environment:
-      - DB_HOST=host.docker.internal # 🔑 Truco maestro: Le permite al contenedor conectarse al MySQL de tu XAMPP local
+      - DB_HOST=tienda-db-nueva
       - DB_PORT=3306
       - DB_USER=root
-      - DB_PASSWORD=
-      - DB_NAME=tienda_ropa # Reemplaza por el nombre exacto de tu Base de Datos en phpMyAdmin
+      - DB_PASSWORD=root_password
+      - DB_NAME=tienda_ropa
+    restart: always
+    depends_on:
+      - tienda-db-nueva
+
+  # 🗄️ BASE DE DATOS (MYSQL CON RUTA FÍSICA CONTROLADA)
+  tienda-db-nueva:
+    container_name: tienda-db-nueva
+    image: mysql:8.0.46
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=tienda_ropa
+    volumes:
+      # Mapea directamente la carpeta vacía de tu Windows para evadir la caché de Docker
+      - ./mysql_data_limpia:/var/lib/mysql
     restart: always

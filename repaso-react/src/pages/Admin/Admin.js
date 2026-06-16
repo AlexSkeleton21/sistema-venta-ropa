@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'export-default-axios' // Nota: Si te da error de importación, déjalo como 'axios'
 import axios from 'axios';
 import { jsPDF } from 'jspdf'; // 🔑 Importación corregida con llaves
 import autoTable from 'jspdf-autotable'; // 🔑 Importación como función directa
@@ -38,7 +39,7 @@ const Admin = () => {
   const guardarPrenda = async (e) => {
     e.preventDefault();
     if (!nuevoProducto.nombre || !nuevoProducto.precio || !nuevoProducto.imagen) {
-      alert("Por favor llena todos los campos, incluyendo el nombre de la imagen");
+      alert("Por favor llena todos los campos (Nombre, Precio y Origen de la Imagen)");
       return;
     }
     try {
@@ -201,10 +202,11 @@ const Admin = () => {
             value={nuevoProducto.precio} 
             onChange={manejarCambioInput}
           />
+          {/* 🌐 Cambiado el placeholder para dejar claro que acepta URLs de Internet */}
           <input 
             type="text" 
             name="imagen" 
-            placeholder="Nombre exacto del archivo (ej: chaquetaroja.webp)" 
+            placeholder="Link de internet (https://...) o archivo local (ej: polera.jpg)" 
             value={nuevoProducto.imagen} 
             onChange={manejarCambioInput}
           />
