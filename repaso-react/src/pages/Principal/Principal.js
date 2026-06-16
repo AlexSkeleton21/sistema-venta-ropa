@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Principal.css';
 import Producto from '../../components/Producto/Producto';
@@ -6,10 +6,10 @@ import Producto from '../../components/Producto/Producto';
 const Principal = ({ agregarAlCarrito }) => {
   const [productos, guardarProductos] = useState([]);
 
-  // Función de consulta con Axios apuntando a NestJS
+  // Función de consulta con Axios apuntando a NestJS en Railway
   async function consulta() {
     try {
-      const resultado = await axios.get('http://localhost:3001/productos');
+      const resultado = await axios.get('https://sistema-venta-ropa-production.up.railway.app/productos');
       guardarProductos(resultado.data);
     } catch (error) {
       console.error("Error al traer los productos del backend:", error);

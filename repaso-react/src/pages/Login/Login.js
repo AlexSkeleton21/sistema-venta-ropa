@@ -66,13 +66,13 @@ const Login = ({ alLoguear }) => {
     }
 
     if (esRegistro) {
-      // 📝 PROCESO: REGISTRO DE NUEVOS CLIENTES EN MYSQL
+      // 📝 PROCESO: REGISTRO DE NUEVOS CLIENTES EN MYSQL EN LA NUBE
       if (fuerza === 'Débil ⚠️') {
         setError('No se permiten contraseñas débiles por políticas corporativas de seguridad.');
         return;
       }
       try {
-        await axios.post('http://localhost:3001/auth/registro', { 
+        await axios.post('https://sistema-venta-ropa-production.up.railway.app/auth/registro', { 
           username: username.trim(), 
           password: password 
         });
@@ -82,9 +82,9 @@ const Login = ({ alLoguear }) => {
         setError(err.response?.data?.message || 'Error en el servidor al registrar.');
       }
     } else {
-      // 🔑 PROCESO: AUTENTICACIÓN DIRECTA CONTRA MYSQL Y AUDITORÍA ACTIVA
+      // 🔑 PROCESO: AUTENTICACIÓN DIRECTA CONTRA MYSQL EN LA NUBE Y AUDITORÍA ACTIVA
       try {
-        const respuesta = await axios.post('http://localhost:3001/auth/login', {
+        const respuesta = await axios.post('https://sistema-venta-ropa-production.up.railway.app/auth/login', {
           username: username.trim(),
           password: password
         });
@@ -101,7 +101,7 @@ const Login = ({ alLoguear }) => {
         if (err.response && err.response.data) {
           setError(err.response.data.message || 'Credenciales incorrectas.');
         } else {
-          setError('Sin respuesta del servidor. Verifica que NestJS y XAMPP estén encendidos.');
+          setError('Sin respuesta del servidor. Verifica la conexión con el servidor en Railway.');
         }
       }
     }

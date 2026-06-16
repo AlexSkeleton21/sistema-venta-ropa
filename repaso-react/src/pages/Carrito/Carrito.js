@@ -25,11 +25,11 @@ const Carrito = ({ carrito, eliminarDelCarrito, total, limpiarCarrito }) => {
     // Generar el link de WhatsApp de manera segura
     const urlWhatsApp = `https://wa.me/${numeroTelefono}?text=${encodeURIComponent(mensajeWhatsApp)}`;
 
-    // INTENTO DE ACTUALIZAR EL BACKEND
+    // INTENTO DE ACTUALIZAR EL BACKEND (CORREGIDO A RAILWAY)
     try {
-      // Recorremos los productos para cambiar el estado a 'Vendido' en MySQL
+      // Recorremos los productos para cambiar el estado a 'Vendido' en MySQL en la nube
       for (const prenda of carrito) {
-        await axios.patch(`http://localhost:3001/productos/${prenda.id}`, {
+        await axios.patch(`https://sistema-venta-ropa-production.up.railway.app/productos/${prenda.id}`, {
           estado: 'Vendido'
         });
       }

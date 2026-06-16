@@ -39,10 +39,10 @@ function App() {
     guardarCarrito([]);
   };
 
-  // 🚪 FUNCIÓN DE LOGOUT CON AUDITORÍA REAL
+  // 🚪 FUNCIÓN DE LOGOUT CON AUDITORÍA REAL CORREGIDA
   const ejecutarCierreSesion = async () => {
     try {
-      await axios.post('http://localhost:3001/auth/logout', { username: nombreUsuario });
+      await axios.post('https://sistema-venta-ropa-production.up.railway.app/auth/logout', { username: nombreUsuario });
     } catch (err) {
       console.error("No se pudo registrar el log de salida.");
     }

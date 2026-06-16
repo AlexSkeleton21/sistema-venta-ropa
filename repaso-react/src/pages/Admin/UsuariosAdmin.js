@@ -5,10 +5,10 @@ import './UsuariosAdmin.css';
 const UsuariosAdmin = () => {
   const [usuarios, setUsuarios] = useState([]);
 
-  // Cargar usuarios desde el backend (NestJS)
+  // Cargar usuarios desde el backend (NestJS en Railway)
   const obtenerUsuarios = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/auth/usuarios'); 
+      const res = await axios.get('https://sistema-venta-ropa-production.up.railway.app/auth/usuarios'); 
       setUsuarios(res.data);
     } catch (err) {
       console.error("Error al cargar los usuarios:", err);
@@ -27,7 +27,7 @@ const UsuariosAdmin = () => {
     if (!confirmar) return;
 
     try {
-      await axios.patch(`http://localhost:3001/auth/usuarios/${id}`, {
+      await axios.patch(`https://sistema-venta-ropa-production.up.railway.app/auth/usuarios/${id}`, {
         estado: nuevoEstado
       });
       alert(`Usuario actualizado con éxito.`);
