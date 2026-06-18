@@ -1,4 +1,4 @@
-import { Module, Logger } from '@nestjs/common'; // Importa Logger
+import { Module, Logger } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { ProductosModule } from './productos/productos.module';
@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
     
     TypeOrmModule.forRoot({
       type: 'mysql',
-      // Esto es lo que vamos a depurar:
+      // Usamos las variables de Railway, con defaults seguros
       host: process.env.DB_HOST || 'mysql.railway.internal',
       port: parseInt(process.env.DB_PORT || '3306', 10),
       username: process.env.DB_USER || 'root',
@@ -18,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME || 'railway',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      logging: true, // Esto es vital para ver qué está pasando internamente
     }),
     ProductosModule,
     AuthModule,
@@ -27,7 +28,11 @@ export class AppModule {
   private readonly logger = new Logger(AppModule.name);
 
   constructor() {
-    // ESTO SALDRÁ EN TUS LOGS DE RAILWAY
-    this.logger.log(`Conectando a DB_HOST: ${process.env.DB_HOST}`);
+    // Depuración: Esto nos dirá qué variables está viendo realmente la app
+    this.logger.log(`Configuración detectada:`);
+    this.logger.log(`HOST: ${process.env.DB_HOST}`);
+    this.logger.log(`USER: ${process.env.DB_USER}`);
+    this.logger.log(`DB: ${process.env.DB_NAME}`);
+    this.logger.log(`PASSWORD_PRESENT: ${process.env.DB_PASSWORD ? 'SÍ' : 'NO'}`);
   }
 }
