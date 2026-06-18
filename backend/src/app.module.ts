@@ -10,15 +10,15 @@ import { AuthModule } from './auth/auth.module';
     
     TypeOrmModule.forRoot({
       type: 'mysql',
-      // Usamos las variables de Railway, con defaults seguros
+      // Respaldo manual: si la variable de Railway falta, usa el valor fijo
       host: process.env.DB_HOST || 'mysql.railway.internal',
       port: parseInt(process.env.DB_PORT || '3306', 10),
       username: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD, 
+      password: process.env.DB_PASSWORD || 'AijchxlFiyLNwvhLDtPXsmPqUdIDmyAh',
       database: process.env.DB_NAME || 'railway',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
-      logging: true, // Esto es vital para ver qué está pasando internamente
+      synchronize: true, // Útil para desarrollo, pero cuidado en producción real
+      logging: true,
     }),
     ProductosModule,
     AuthModule,
@@ -28,11 +28,6 @@ export class AppModule {
   private readonly logger = new Logger(AppModule.name);
 
   constructor() {
-    // Depuración: Esto nos dirá qué variables está viendo realmente la app
-    this.logger.log(`Configuración detectada:`);
-    this.logger.log(`HOST: ${process.env.DB_HOST}`);
-    this.logger.log(`USER: ${process.env.DB_USER}`);
-    this.logger.log(`DB: ${process.env.DB_NAME}`);
-    this.logger.log(`PASSWORD_PRESENT: ${process.env.DB_PASSWORD ? 'SÍ' : 'NO'}`);
+    this.logger.log(`Conectando a host: ${process.env.DB_HOST || 'mysql.railway.internal'}`);
   }
 }
