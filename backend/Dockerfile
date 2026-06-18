@@ -1,20 +1,19 @@
-# 1. Usamos la misma base de Node.js
-FROM node:18-alpine
-
-# 2. Carpeta de trabajo interna del contenedor
+# 1. Etapa de construcción (Build)
+FROM node:18-alpine AS builder
 WORKDIR /app
-
-# 3. Copiamos las dependencias del backend
 COPY package*.json ./
-
-# 4. Instalamos los módulos de NestJS
 RUN npm install
-
-# 5. Copiamos todo el código de tu servidor NestJS
 COPY . .
+RUN npm run build
 
-# 6. Abrimos el puerto 3001 que usa tu API para escuchar a React
+# 2. Etapa de ejecución (Producción)
+FROM node:18-alpine
+WORKDIR /app
+# Solo copiamos lo necesario para correr
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+
 EXPOSE 3001
-
-# 7. Comando para arrancar NestJS en modo desarrollo
-CMD ["npm", "run", "start:dev"]
+# AQUÍ ESTÁ EL CAMBIO: Ejecutamos el archivo compilado directamente
+CMD ["node", "dist/main.js"]
